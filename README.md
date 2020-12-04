@@ -29,7 +29,7 @@
 - ```make redis```: Enter redis container
 - ```make redis-cli```: Open redis-cli inside redis container
 ### Entrypoint:
-```/var/www/html/default```
+```/var/www/html/public```
 ### For custom configurations:
 - Put the config inside ```configs/\<service\>```
 - Map the configs on ```docker-composer.yml```
