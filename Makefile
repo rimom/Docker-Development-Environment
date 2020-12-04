@@ -22,6 +22,9 @@ es:
 redis:
 	docker exec -it redis /bin/bash
 
+redis-cli:
+	docker exec -it redis redis-cli -a 123456
+
 mailcatcher:
 	docker exec -it mailcatcher /bin/bash
 

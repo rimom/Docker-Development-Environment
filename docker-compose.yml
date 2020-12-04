@@ -49,9 +49,15 @@ services:
   redis:
     container_name: redis
     image: redis:6.0.9
+    command: redis-server --requirepass 123456
     restart: always
     ports:
       - 6379:6379
+    volumes:
+      - ./configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - redis_volume:/var/lib/redis
+    environment:
+     - REDIS_REPLICATION_MODE=master
 
   mailcatcher:
     container_name: mailcatcher
@@ -78,3 +84,4 @@ services:
 
 volumes:
   db_volume:
+  redis_volume:
