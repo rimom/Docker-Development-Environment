@@ -20,7 +20,7 @@ services:
     expose:
       - 9000
     volumes:
-      - ./src:/var/www/html
+      - ./src:/var/www/html:cached
       - ./configs/php/php.ini:/usr/local/etc/php/php.ini      
 
   mariadb:
