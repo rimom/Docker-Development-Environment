@@ -1,6 +1,12 @@
 # Docker Development Environment
 
-## Services provided:
+### Instructions
+1. Put the codebase in ```./src```
+2. run ```make up```
+### Varnish already set by default 
+ - To bypass varnish, access with the port ```8088```
+ - To flush the cache use ```curl -X PURGE 127.0.0.1```
+### Services provided:
 - Nginx 1.19.5
 - PHP-fpm 8.0
 - MariaDB 10.5.8
@@ -9,12 +15,7 @@
 - Mailcatcher
 - RabbitMQ 3.8.9-management
 - Varnish 6.5
-
-## Instructions
-1. Put the codebase in ```./src```
-2. run ```make up```
-
-## commands:
+### commands:
 - ```make up```: Start all the services containers
 - ```make stop```: Stop all the services containers
 - ```make down```: Kill all the services containers
@@ -25,6 +26,10 @@
 - ```make mailcatcher```: Enter mailcatcher container
 - ```make rabbitmq```: Enter rabbitmq container
 - ```make varnish```: Enter varnish container
-
-## Entrypoint: /var/www/html/default
-For custom configurations, put the config inside ```configs/\<service\>``` and map it on ```docker-composer.yml```
+- ```make redis```: Enter redis container
+- ```make redis-cli```: Open redis-cli inside redis container
+### Entrypoint:
+```/var/www/html/default```
+### For custom configurations:
+- Put the config inside ```configs/\<service\>```
+- Map the configs on ```docker-composer.yml```
