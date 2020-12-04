@@ -1,0 +1,80 @@
+version: '2'
+
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:1.19.5
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./configs/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    volumes_from:
+      - app
+
+  app:
+    container_name: app
+    build: ./docker_images/php
+    restart: always
+    expose:
+      - 9000
+    volumes:
+      - ./src:/var/www/html
+      - ./configs/php/php.ini:/usr/local/etc/php/php.ini      
+
+  mariadb:
+    container_name: db
+    image: mariadb:10.5.8
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - "./configs/mysql/mysql:/etc/mysql/conf.d"
+      - db_volume:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+
+  elasticsearch:
+    container_name: elasticsearch
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    image: elasticsearch:7.9.3
+    restart: always
+    ports:
+      - 9200:9200
+    volumes:
+      - ./configs/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+
+  redis:
+    container_name: redis
+    image: redis:6.0.9
+    restart: always
+    ports:
+      - 6379:6379
+
+  mailcatcher:
+    container_name: mailcatcher
+    image: schickling/mailcatcher
+    restart: always
+    ports:
+      - 1080:1080
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.8.9-management
+    restart: always
+    ports:
+      - 5672:5672
+
+  varnish:
+    container_name: varnish
+    image: varnish:6.5
+    restart: always
+    ports:
+      - 6081:6081
+    volumes:
+      - ./configs/varnish:/etc/varnish/
+
+volumes:
+  db_volume:
