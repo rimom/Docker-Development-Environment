@@ -19,6 +19,12 @@ db:
 es:
 	docker exec -it elasticsearch /bin/bash
 
+logstash:
+	docker exec -it logstash /bin/bash
+
+kibana:
+	docker exec -it kibana /bin/bash
+
 redis:
 	docker exec -it redis /bin/bash
 

@@ -11,6 +11,8 @@
 - PHP-fpm 8.0
 - MariaDB 10.5.8
 - Elasticsearch 7.9.3
+- Kibana 7.9.3
+- Logstash 7.9.3
 - Redis 6.0.9
 - Mailcatcher
 - RabbitMQ 3.8.9-management
@@ -23,6 +25,8 @@
 - ```make nginx```: Enter nginx container
 - ```make db```: Enter mysql container
 - ```make es```: Enter elasticsearch container
+- ```make logstash```: Enter logstash container
+- ```make kibana```: Enter kibana container
 - ```make mailcatcher```: Enter mailcatcher container
 - ```make rabbitmq```: Enter rabbitmq container
 - ```make varnish```: Enter varnish container
@@ -33,3 +37,6 @@
 ### For custom configurations:
 - Put the config inside ```configs/\<service\>```
 - Map the configs on ```docker-composer.yml```
+### To visualize the logs on Kibana
+ - Map them to ```./log```
+ - Update logstash.conf
