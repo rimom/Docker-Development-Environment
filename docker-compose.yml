@@ -46,7 +46,7 @@ services:
     volumes:
       - ./configs/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
   
-  logstach:
+  logstash:
     container_name: logstash
     image: logstash:7.9.3
     restart: always
@@ -91,12 +91,13 @@ services:
 
   varnish:
     container_name: varnish
-    image: varnish:6.5
+    build: ./docker_images/varnish
     restart: always
     ports:
       - 80:80
     volumes:
       - ./configs/varnish/default.vcl:/etc/varnish/default.vcl
+      - ./log/varnish/varnish.log:/var/log/varnish/varnish.log
 
 volumes:
   db_volume:
