@@ -46,8 +46,8 @@ services:
     ports:
       - 9200:9200
     volumes:
+      - elasticsearch_volume:/usr/share/elasticsearch/data
       - ./configs/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - elasticsearch_volume:/var/lib/elasticsearch/data
 
   filebeat:
     container_name: filebeat
@@ -73,6 +73,8 @@ services:
     restart: always
     ports:
       - 5601:5601
+    depends_on: 
+      - elasticsearch
 
   redis:
     container_name: redis
