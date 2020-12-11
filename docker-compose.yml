@@ -39,16 +39,25 @@ services:
     container_name: elasticsearch
     environment:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    image: elasticsearch:7.9.3
+    image: elasticsearch:7.10.1
     restart: always
     ports:
       - 9200:9200
     volumes:
       - ./configs/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+
+  filebeat:
+    container_name: filebeat
+    image: elastic/filebeat:7.10.1
+    restart: always
+    volumes:
+      - ./configs/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./log/nginx:/var/log/nginx
+      - ./log/varnish:/var/log/varnish
   
   logstash:
     container_name: logstash
-    image: logstash:7.9.3
+    image: logstash:7.10.1
     restart: always
     volumes:
       - ./configs/logstash/logstash.conf:/usr/share/logstash/config/logstash.conf
@@ -57,7 +66,7 @@ services:
   
   kibana:
     container_name: kibana
-    image: kibana:7.9.3
+    image: kibana:7.10.1
     restart: always
     ports:
       - 5601:5601
@@ -65,7 +74,6 @@ services:
   redis:
     container_name: redis
     image: redis:6.0.9
-    command: redis-server --requirepass 123456
     restart: always
     ports:
       - 6379:6379

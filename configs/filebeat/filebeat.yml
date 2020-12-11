@@ -1,0 +1,13 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/nginx/*.log
+    - /var/log/varnish/*.log
+
+output.redis:
+  hosts: ["redis"]
+  key: "logs"
+  db: 0
+  timeout: 5
+  data_type: "list"
