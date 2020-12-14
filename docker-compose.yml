@@ -1,42 +1,121 @@
 version: '2'
 
 services:
-  nginx:
-    container_name: nginx
+  #Frontend
+  nginx_frontend_reverse_proxy:
+    container_name: nginx_frontend_reverse_proxy
     image: nginx:1.19.5
     restart: always
     ports:
-      - 8088:8088
+      - 80:80
     volumes:
-      - ./log/nginx:/var/log/nginx
-      - ./configs/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    volumes_from:
-      - app
-    depends_on: 
-      - varnish
+      - ./log/nginx_frontend_reverse_proxy:/var/log/nginx
+      - ./configs/nginx/nginx_frontend_reverse_proxy.conf:/etc/nginx/conf.d/default.conf
 
-  app:
-    container_name: app
-    build: ./docker_images/php
+  varnish_cache_frontend:
+    container_name: varnish_cache_frontend
+    build: ./docker_images/varnish
+    restart: always
+    ports:
+      - 6081:6081
+    volumes:
+      - ./configs/varnish/default.vcl:/etc/varnish/default.vcl
+      - ./log/varnish/varnish.log:/var/log/varnish/varnish.log
+
+  node_frontend:
+    container_name: node_frontend
+    image: node:14.4.0-alpine3.12
+    restart: always
+    ports:
+      - 3000:3000
+    working_dir: /usr/app
+    volumes:
+      - ./src/frontend:/usr/app
+    command: node app
+
+  #Eventbus
+  rabbitmq_eventbus:
+    container_name: rabbitmq_eventbus
+    image: rabbitmq:3.8.9-management
+    restart: always
+    ports:
+      - 15672:15672
+
+  #CQRS Router
+  nginx_cqrs_router:
+    container_name: nginx_cqrs_router
+    image: nginx:1.19.5
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - ./log/nginx_cqrs_router:/var/log/nginx
+      - ./configs/nginx/nginx_cqrs_router.conf:/etc/nginx/conf.d/default.conf
+    volumes_from: 
+      - php_cqrs
+
+  #CQRS PHP
+  php_cqrs:
+    container_name: php_cqrs
+    build: ./docker_images/php_cqrs
     restart: always
     expose:
       - 9000
+    ports:
+      - 1234:80
     volumes:
-      - ./src:/var/www/html:cached
-      - ./configs/php/php.ini:/usr/local/etc/php/php.ini      
+      - ./src:/var/www/html
+      - ./configs/php_cqrs/php.ini:/usr/local/etc/php/php.ini   
 
-  mariadb:
-    container_name: db
+  mariadb_command:
+    container_name: mariadb_command
     image: mariadb:10.5.8
     restart: always
     ports:
       - 3306:3306
-    volumes:
-      - "./configs/mysql/mysql:/etc/mysql/conf.d"
-      - mariadb_volume:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: 123123q
+    volumes:
+      - ./configs/mariadb_command:/etc/mysql/conf.d
+      - mariadb_command_volume:/var/lib/mysql
 
+  neo4j_mview:
+    container_name: neo4j_mview
+    image: neo4j:3.5.3
+    restart: always
+    ports:
+      - 7474:7474
+      - 7473:7473
+      - 7687:7687
+    volumes:
+      - neo4j_mview_volume:/data
+      - ./log/neo4j_mview:/logs
+
+  #AAA
+  node_aaa:
+    container_name: node_aaa
+    image: node:14.4.0-alpine3.12
+    restart: always
+    ports:
+      - 9090:3000
+    working_dir: /usr/app
+    volumes:
+      - ./src/aaa:/usr/app:cached
+    command: node app       
+
+  neo4j_aaa:
+    container_name: neo4j_aaa
+    image: neo4j:3.5.3
+    restart: always
+    ports:
+      - 8474:7474
+      - 8473:7473
+      - 8687:7687
+    volumes:
+      - neo4j_aaa_volume:/data
+      - ./log/neo4j_aaa:/logs
+  
+  #Logs
   elasticsearch:
     container_name: elasticsearch
     environment:
@@ -55,7 +134,10 @@ services:
     restart: always
     volumes:
       - ./configs/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - ./log/nginx:/var/log/nginx
+      - ./log/nginx_frontend_reverse_proxy:/var/log/nginx_frontend_reverse_proxy
+      - ./log/nginx_cqrs_router:/var/log/nginx_cqrs_router
+      - ./log/neo4j_aaa:/var/log/neo4j_aaa
+      - ./log/neo4j_mview:/var/log/neo4j_mview
       - ./log/varnish:/var/log/varnish
   
   logstash:
@@ -64,7 +146,6 @@ services:
     restart: always
     volumes:
       - ./configs/logstash/logstash.conf:/usr/share/logstash/config/logstash.conf
-      - ./log/nginx:/log/nginx
     command: bin/logstash -f /usr/share/logstash/config/logstash.conf
   
   kibana:
@@ -76,18 +157,32 @@ services:
     depends_on: 
       - elasticsearch
 
-  redis:
-    container_name: redis
+  redis_logs_queue:
+    container_name: redis_logs_queue
     image: redis:6.0.9
     restart: always
     ports:
       - 6379:6379
     volumes:
-      - ./configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
-      - redis_volume:/var/lib/redis
+      - ./configs/redis/redis_logs_queue.conf:/usr/local/etc/redis/redis.conf
+      - redis_logs_queue_volume:/var/lib/redis
     environment:
      - REDIS_REPLICATION_MODE=master
 
+  #Session
+  redis_session:
+    container_name: redis_session
+    image: redis:6.0.9
+    restart: always
+    ports:
+      - 7379:6379
+    volumes:
+      - ./configs/redis/redis_session.conf:/usr/local/etc/redis/redis.conf
+      - redis_session_volume:/var/lib/redis
+    environment:
+     - REDIS_REPLICATION_MODE=master
+
+  #Misc
   mailcatcher:
     container_name: mailcatcher
     image: schickling/mailcatcher
@@ -95,24 +190,10 @@ services:
     ports:
       - 1080:1080
 
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3.8.9-management
-    restart: always
-    ports:
-      - 15672:15672
-
-  varnish:
-    container_name: varnish
-    build: ./docker_images/varnish
-    restart: always
-    ports:
-      - 80:80
-    volumes:
-      - ./configs/varnish/default.vcl:/etc/varnish/default.vcl
-      - ./log/varnish/varnish.log:/var/log/varnish/varnish.log
-
 volumes:
-  mariadb_volume:
-  redis_volume:
+  mariadb_command_volume:
+  neo4j_mview_volume:
+  neo4j_aaa_volume:
+  redis_logs_queue_volume:
   elasticsearch_volume:
+  redis_session_volume:

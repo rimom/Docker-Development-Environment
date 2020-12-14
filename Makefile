@@ -7,35 +7,4 @@ down:
 stop:
 	docker-compose stop
 
-app:
-	docker exec -it app /bin/bash
-
-nginx:
-	docker exec -it nginx /bin/bash
-
-db:
-	docker exec -it db /bin/bash
-
-es:
-	docker exec -it elasticsearch /bin/bash
-
-logstash:
-	docker exec -it logstash /bin/bash
-
-kibana:
-	docker exec -it kibana /bin/bash
-
-redis:
-	docker exec -it redis /bin/bash
-
-redis-cli:
-	docker exec -it redis redis-cli -a 123456
-
-mailcatcher:
-	docker exec -it mailcatcher /bin/bash
-
-rabbitmq:
-	docker exec -it rabbitmq /bin/bash
-
-varnish:
-	docker exec -it varnish /bin/bash
+restart: down up

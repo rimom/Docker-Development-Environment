@@ -14,8 +14,8 @@ vcl 4.1;
 
 # Default backend definition. Set this to point to your content server.
 backend default {
-    .host = "nginx";
-    .port = "8088";
+    .host = "node_frontend";
+    .port = "3000";
 }
 
 sub vcl_recv {

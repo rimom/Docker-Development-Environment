@@ -2,8 +2,11 @@ filebeat.inputs:
 - type: log
   enabled: true
   paths:
-    - /var/log/nginx/*.log
+    - /var/log/nginx_frontend_reverse_proxy/*.log
+    - /var/log/nginx_cqrs_router/*.log
     - /var/log/varnish/*.log
+    - /var/log/neo4j_aaa/*.log
+    - /var/log/meo4j_mview/*.log
 
 output.redis:
   hosts: ["redis"]
