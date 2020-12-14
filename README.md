@@ -13,9 +13,10 @@
 - Cache layer: ```Varnish 6.5``` - Listening on port 6081 and point to "node frontend app" on port 3000
 - Node frontend app: ```Node 14.4.0 (first instance)``` - Listening on port 3000, should register the events on event bus listening on port 15672
 - Event bus: ```RabbitMQ 3.8.9``` - Listening on port 15672
+- Command & Query Event Handler: ```PHP-fpm 8.0 (first instance)``` - Script listening for events
 - CQRS router: ```Nginx 1.19.5 (second instance)``` - Listening requests on port 8080, redirect POST/PUT/PATCH/DELETE to port 8081 and GET to port 8082
-- Command service: ```PHP-fpm 8.0``` - Listening for POST/PUT/PATCH/DELETE on port 8081, writes on MariaDb listening on port 3306 and register event on Event bus
-- Materialized View: ```PHP-fpm 8.0 (same instance)``` - Listening for GET on port 8082, reads the event bus, reads the data on mariaDb, writes the data on Neo4j(fisrt instance) Listening on port 7474/7473/7687
+- Command service: ```PHP-fpm 8.0 (second instance)``` - Listening for POST/PUT/PATCH/DELETE on port 8081, writes on MariaDb listening on port 3306 and register event on Event bus
+- Materialized View: ```PHP-fpm 8.0 (second instance)``` - Listening for GET on port 8082, reads the event bus, reads the data on mariaDb, writes the data on Neo4j(fisrt instance) Listening on port 7474/7473/7687
 - RDBMS: ```MariaDB 10.5.8``` - Listening on port 3306
 - Graph Database: ```Neo4j 3.5.3 (first instance)``` - Listening on port 7474/7473/7687
 - AAA (Authentication, Authorization and Account): ```Node 14.4.0 (second instance)``` - Listening on port 9090, read/write on Neo4j(second instance) listening on port 8474/8473/8687

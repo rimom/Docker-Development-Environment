@@ -61,11 +61,20 @@ services:
     restart: always
     expose:
       - 9000
-    ports:
-      - 1234:80
     volumes:
       - ./src:/var/www/html
-      - ./configs/php_cqrs/php.ini:/usr/local/etc/php/php.ini   
+      - ./configs/php_cqrs/php.ini:/usr/local/etc/php/php.ini
+
+  #CQEH
+  php_cqeh:
+    container_name: php_cqeh
+    build: ./docker_images/php_cqeh
+    restart: always
+    expose:
+      - 9000
+    volumes:
+      - ./src/cqeh:/var/www/html
+      - ./configs/php_cqeh/php.ini:/usr/local/etc/php/php.ini  
 
   mariadb_command:
     container_name: mariadb_command
