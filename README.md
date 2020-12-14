@@ -43,4 +43,4 @@
 - Map the configs on ```docker-composer.yml```
 
 ### Initial Diagram:
-![Diagram](diagram.png?raw=true "Diagram")
+![Diagram](diagram_color.png?raw=true "Diagram")
