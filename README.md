@@ -23,7 +23,7 @@
 - Graph Database: ```Neo4j 3.5.3(second instance)``` - Listening on port 8474/8473/8687
 - Logstreaming: ```Filebeat 7.10.1```
 - Log queue: ```Redis 6.0.9 (first instance)``` - Listening on port 6379
-- Logs Concentrator: ```Logstash 7.10.1```
+- Logs Aggregator: ```Logstash 7.10.1```
 - Logs text search: ```Elasticsearch 7.10.1``` - Listening on port 9200
 - Graphs and dashboard: ```Kibana 7.10.1``` - Listening on port 5601
 - Email Interceptor: ```Mailcatcher``` - Listening on port 1080
@@ -41,3 +41,6 @@
 ### For custom configurations:
 - Put the config inside ```configs/\<service\>```
 - Map the configs on ```docker-composer.yml```
+
+### Initial Diagram:
+![Diagram](diagram.png?raw=true "Diagram")
