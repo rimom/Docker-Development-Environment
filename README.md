@@ -42,5 +42,11 @@
 - Put the config inside ```configs/\<service\>```
 - Map the configs on ```docker-composer.yml```
 
+### TBD
+- SIEM - ELK Stack with heavy use of Kibana alerts
+- WAF - Web application Firewall
+- IPS
+- Report System
+- Contigency plan
 ### Initial Diagram:
-![Diagram](diagram_color.png?raw=true "Diagram")
+<img src="Dev Architecture.svg">
