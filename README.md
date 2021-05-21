@@ -1,5 +1,5 @@
 # Docker Development Environment
-
+## Although this is 100% functional, I'm deprecating this project in favour of a kubernetes version which is under development.
 ### Instructions
 1. Put the codebase in one of the following (delete the sample files already in):
 - ```./src/aaa``` - Node app
